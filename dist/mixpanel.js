@@ -2,7 +2,7 @@
 
   window.WisemblyMixpanel = {
 
-    version: '0.1.1',
+    version: '0.1.0',
 
     options: {
       identifier: null,
