@@ -2,10 +2,10 @@
 
   window.WisemblyMixpanel = {
 
-    version: '0.1.2',
+    version: '0.1.3',
 
     options: {
-      identifier: null,
+      identifier: '',
       script: '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js',
       scriptTimeout: 5000,
       isEnabled: true,
@@ -48,7 +48,7 @@
 
     _loadScript: function () {
       var self = this;
-      return $.ajax({ url: this.options.script, dataType: 'script', timeout: this.options.scriptTimeout })
+      return $.ajax({ url: this._get('script'), dataType: 'script', timeout: this._get('scriptTimeout') })
         .done(function () { self._notify('onScript'); })
         .fail(function () { self._notify('onScriptError'); });
     },
@@ -56,8 +56,8 @@
     boot: function () {
       if (!this.isEnabled())
         return false;
-      window.mixpanel.init(this.options.identifier);
-      window.mixpanel.identify(this._get('identity'));
+      window.mixpanel.init(this._get('identifier'));
+      this.track('identify', this._get('identity'), {}, true);
       this._notify('onBoot');
       return true;
     },
@@ -127,6 +127,10 @@
       };
 
       switch (_event.type) {
+        case 'identify':
+          window.mixpanel.identify(_event.data);
+          _event.dfd.resolve();
+          break;
         case 'track':
           window.mixpanel.track(_event.data, _event.metadata, fnCallback);
           break;
