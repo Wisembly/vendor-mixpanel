@@ -1,0 +1,17 @@
+{
+  "name": "wisembly-vendor-mixpanel",
+  "version": "0.1.0",
+  "moduleType": [
+    "globals"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "#>=1.6"
+  }
+}
