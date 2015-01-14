@@ -2,7 +2,7 @@
 
   window.WisemblyMixpanel = {
 
-    version: '0.1.3',
+    version: '0.1.4',
 
     options: {
       identifier: '',
@@ -129,6 +129,7 @@
       switch (_event.type) {
         case 'identify':
           window.mixpanel.identify(_event.data);
+          window.mixpanel.register({ user_id: _event.data });
           _event.dfd.resolve();
           break;
         case 'track':
