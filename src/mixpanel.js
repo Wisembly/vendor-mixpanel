@@ -2,7 +2,7 @@
 
   window.WisemblyMixpanel = {
 
-    version: '0.1.4',
+    version: '0.1.5',
 
     options: {
       identifier: '',
@@ -54,21 +54,26 @@
     },
 
     boot: function () {
-      if (!this.isEnabled())
+      if (!this.isLoaded() || !this.isEnabled())
         return false;
+
       window.mixpanel.init(this._get('identifier'));
+      this.initialized = true;
+
       this.track('identify', this._get('identity'), {}, true);
       this._notify('onBoot');
       return true;
     },
 
+    isLoaded: function () {
+      return window.mixpanel && typeof window.mixpanel.init === 'function';
+    },
+
     isReady: function () {
-      return window.mixpanel && typeof window.mixpanel.init === 'function' && this.options;
+      return this.initialized;
     },
 
     isEnabled: function () {
-      if (!this.isReady())
-        return false;
       return this._get('isEnabled');
     },
 
@@ -76,7 +81,7 @@
       if (!type)
         return false;
       this.store(type, data, metadata, priority);
-      if (this.isReady())
+      if (this.isReady() && this.isEnabled())
         this.flush();
       return true;
     },
@@ -86,12 +91,12 @@
       this._storedId = this._storedId || 0;
       // Build and store Deferred
       var _event = {
-          id: ++this._storedId,
-          dfd: $.Deferred(),
-          type: type,
-          data: data,
-          metadata: metadata
-        };
+        id: ++this._storedId,
+        dfd: $.Deferred(),
+        type: type,
+        data: data,
+        metadata: metadata
+      };
 
       if (priority !== true)
         this._storedEvents.push(_event);
@@ -116,7 +121,7 @@
     },
 
     mixpanelTrack: function (_event) {
-      if (!this.isEnabled())
+      if (!this.isReady() || !this.isEnabled())
         return _event.dfd.reject().promise();
 
       var fnCallback = function (status) {
