@@ -147,7 +147,7 @@
           window.mixpanel.people.set_once(_event.data, fnCallback);
           break;
         case 'people.increment':
-          window.mixpanel.people.increment(_event.data, fnCallback);
+          window.mixpanel.people.increment(_event.data, _event.count, fnCallback);
           break;
         case 'people.append':
           window.mixpanel.people.append(_event.data, fnCallback);
