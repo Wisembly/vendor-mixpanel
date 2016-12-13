@@ -1,9 +1,14 @@
 {
+    "name": "wisembly-vendor-mixpanel",
+    "main": "src/mixpanel.js",
+    "version": "0.2.0",
     "scripts": {
         "test": "bower install && node node_modules/karma/bin/karma start test/karma.config.js",
         "build": "node node_modules/gulp/bin/gulp.js"
     },
-    "dependencies": {},
+    "dependencies": {
+      "jquery": ">=1.6"
+    },
     "devDependencies": {
         "karma": "*",
         "karma-mocha": "*",
@@ -17,8 +22,5 @@
         "gulp": "*",
         "gulp-uglify": "*",
         "gulp-rename": "*"
-    },
-    "spm": {
-        "main": "src/mixpanel.js"
     }
 }
