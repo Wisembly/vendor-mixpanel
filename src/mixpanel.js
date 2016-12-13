@@ -1,10 +1,28 @@
-(function ($) {
+/*global define,require,module*/
 
-  window.WisemblyMixpanel = {
+(function (factory) {
 
-    version: '0.1.6',
+  if (typeof define !== 'undefined' && define.amd) {
+    define(['jquery'], factory);
+  } else if (typeof require !== 'undefined') {
+    module.exports = factory(require('jquery'));
+  } else if (typeof window !== 'undefined') {
+    window.WisemblyRealTime = factory(window.$);
+  } else {
+    throw new Error('Unsupported environment');
+  }
 
-    options: {
+})(function ($) {
+
+  var WisemblyMixpanel = function (options) {
+    this.init(options);
+  };
+
+  WisemblyMixpanel.version = '0.2.0';
+
+  WisemblyMixpanel.prototype = {
+
+    defaultOptions: {
       identifier: '',
       script: '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js',
       scriptTimeout: 5000,
@@ -19,19 +37,23 @@
       onScriptError: null
     },
 
-    setOptions: function (options) {
-      options = options || {};
-      this.options = $.extend(this.options, options);
-    },
+    // setOptions: function (options) {
+    //   options = options || {};
+    //   this.options = $.extend(this.options, options);
+    // },
 
-    init: function () {
+    init: function (options) {
       var self = this;
 
+      options = options || {};
+      this.options = $.extend({}, this.defaultOptions, options);
+
+      // mixpanel expose a global variable in window
       window.mixpanel = window.mixpanel || [];
       window.mixpanel.__SV = 1.2;
 
       if (!this.boot()) {
-        this._loadScript().done(function () { self.boot(); })
+        this._loadScript().done(function () { self.boot(); });
       }
     },
 
@@ -164,4 +186,6 @@
     }
   };
 
-})(jQuery);
+  return WisemblyMixpanel;
+
+});
