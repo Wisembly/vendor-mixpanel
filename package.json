@@ -1,26 +1,27 @@
 {
-    "name": "wisembly-vendor-mixpanel",
-    "main": "src/mixpanel.js",
-    "version": "0.2.0",
-    "scripts": {
-        "test": "bower install && node node_modules/karma/bin/karma start test/karma.config.js",
-        "build": "node node_modules/gulp/bin/gulp.js"
-    },
-    "dependencies": {
-      "jquery": ">=1.6"
-    },
-    "devDependencies": {
-        "karma": "*",
-        "karma-mocha": "*",
-        "karma-sinon-expect": "*",
-        "karma-chrome-launcher": "*",
-        "karma-firefox-launcher": "*",
-        "karma-safari-launcher": "*",
-        "karma-opera-launcher": "*",
-        "karma-ie-launcher": "*",
-        "karma-phantomjs-launcher": "*",
-        "gulp": "*",
-        "gulp-uglify": "*",
-        "gulp-rename": "*"
-    }
+  "name": "wisembly-vendor-mixpanel",
+  "main": "src/mixpanel.js",
+  "version": "0.2.0",
+  "scripts": {
+    "test": "bower install && node node_modules/karma/bin/karma start test/karma.config.js",
+    "build": "node node_modules/gulp/bin/gulp.js"
+  },
+  "dependencies": {
+    "jquery": ">=1.6",
+    "mixpanel-browser": "^2.9.17"
+  },
+  "devDependencies": {
+    "karma": "*",
+    "karma-mocha": "*",
+    "karma-sinon-expect": "*",
+    "karma-chrome-launcher": "*",
+    "karma-firefox-launcher": "*",
+    "karma-safari-launcher": "*",
+    "karma-opera-launcher": "*",
+    "karma-ie-launcher": "*",
+    "karma-phantomjs-launcher": "*",
+    "gulp": "*",
+    "gulp-uglify": "*",
+    "gulp-rename": "*"
+  }
 }

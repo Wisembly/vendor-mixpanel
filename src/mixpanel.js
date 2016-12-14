@@ -3,16 +3,16 @@
 (function (factory) {
 
   if (typeof define !== 'undefined' && define.amd) {
-    define(['jquery'], factory);
+    define(['jquery', 'mixpanel-browser'], factory);
   } else if (typeof require !== 'undefined') {
-    module.exports = factory(require('jquery'));
+    module.exports = factory(require('jquery'), require('mixpanel-browser'));
   } else if (typeof window !== 'undefined') {
-    window.WisemblyRealTime = factory(window.$);
+    window.WisemblyRealTime = factory(window.$, window.mixpanel);
   } else {
     throw new Error('Unsupported environment');
   }
 
-})(function ($) {
+})(function ($, mixpanel) {
 
   var WisemblyMixpanel = function (options) {
     this.init(options);
@@ -24,37 +24,25 @@
 
     defaultOptions: {
       identifier: '',
-      script: '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js',
-      scriptTimeout: 5000,
       isEnabled: true,
       identity: null,
       onBoot: null,
       onStore: null,
       onFlush: null,
       onTrack: null,
-      onTrackError: null,
-      onScript: null,
-      onScriptError: null
+      onTrackError: null
     },
-
-    // setOptions: function (options) {
-    //   options = options || {};
-    //   this.options = $.extend(this.options, options);
-    // },
 
     init: function (options) {
       var self = this;
 
-      options = options || {};
-      this.options = $.extend({}, this.defaultOptions, options);
+      this.options = $.extend({}, this.defaultOptions, options || {});
 
       // mixpanel expose a global variable in window
-      window.mixpanel = window.mixpanel || [];
-      window.mixpanel.__SV = 1.2;
+      // window.mixpanel = window.mixpanel || [];
+      mixpanel.__SV = 1.2;
 
-      if (!this.boot()) {
-        this._loadScript().done(function () { self.boot(); });
-      }
+      this.boot();
     },
 
     _get: function (property) {
@@ -68,27 +56,16 @@
         this.options[eventName].apply(this, [].slice.call(arguments, 1));
     },
 
-    _loadScript: function () {
-      var self = this;
-      return $.ajax({ url: this._get('script'), dataType: 'script', timeout: this._get('scriptTimeout') })
-        .done(function () { self._notify('onScript'); })
-        .fail(function () { self._notify('onScriptError'); });
-    },
-
     boot: function () {
-      if (!this.isLoaded() || !this.isEnabled())
+      if (!this.isEnabled())
         return false;
 
-      window.mixpanel.init(this._get('identifier'));
+      mixpanel.init(this._get('identifier'));
       this.initialized = true;
 
       this.track('identify', this._get('identity'), {}, true);
       this._notify('onBoot');
       return true;
-    },
-
-    isLoaded: function () {
-      return window.mixpanel && typeof window.mixpanel.init === 'function';
     },
 
     isReady: function () {
@@ -155,28 +132,28 @@
 
       switch (_event.type) {
         case 'identify':
-          window.mixpanel.identify(_event.data);
-          window.mixpanel.register({ user_id: _event.data });
+          mixpanel.identify(_event.data);
+          mixpanel.register({ user_id: _event.data });
           _event.dfd.resolve();
           break;
         case 'track':
-          window.mixpanel.track(_event.data, _event.metadata, fnCallback);
+          mixpanel.track(_event.data, _event.metadata, fnCallback);
           break;
         case 'people.set':
-          window.mixpanel.people.set(_event.data, fnCallback);
+          mixpanel.people.set(_event.data, fnCallback);
           break;
         case 'people.set_once':
-          window.mixpanel.people.set_once(_event.data, fnCallback);
+          mixpanel.people.set_once(_event.data, fnCallback);
           break;
         case 'people.increment':
           var increment = _event.metadata ? _event.metadata.increment : undefined;
-          window.mixpanel.people.increment(_event.data, increment, fnCallback);
+          mixpanel.people.increment(_event.data, increment, fnCallback);
           break;
         case 'people.append':
-          window.mixpanel.people.append(_event.data, fnCallback);
+          mixpanel.people.append(_event.data, fnCallback);
           break;
         case 'people.track_charge':
-          window.mixpanel.people.track_charge(_event.data, fnCallback);
+          mixpanel.people.track_charge(_event.data, fnCallback);
           break;
         default:
           _event.dfd.reject();
