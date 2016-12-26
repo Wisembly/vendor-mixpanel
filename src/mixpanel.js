@@ -3,13 +3,25 @@
 (function (factory) {
 
   if (typeof define !== 'undefined' && define.amd) {
+
     define(['jquery', 'mixpanel-browser'], factory);
-  } else if (typeof require !== 'undefined') {
+
+  } else if (typeof module !== 'undefined') {
+
     module.exports = factory(require('jquery'), require('mixpanel-browser'));
+
   } else if (typeof window !== 'undefined') {
-    window.WisemblyRealTime = factory(window.$, window.mixpanel);
+
+    if (typeof window.$ !== 'undefined' && typeof window.mixpanel !== 'undefined') {
+      window.WisemblyMixpanel = factory(window.$, window.mixpanel);
+    } else if (typeof require !== 'undefined') {
+      window.WisemblyMixpanel = factory(require('jquery'), require('mixpanel-browser'));
+    }
+
   } else {
+
     throw new Error('Unsupported environment');
+
   }
 
 })(function ($, mixpanel) {
