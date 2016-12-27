@@ -54,7 +54,11 @@
       // window.mixpanel = window.mixpanel || [];
       mixpanel.__SV = 1.2;
 
-      this.boot();
+    },
+
+    setOptions: function (options) {
+      options = options || {};
+      this.options = $.extend(this.options, options);
     },
 
     _get: function (property) {
@@ -91,6 +95,7 @@
     track: function (type, data, metadata, priority) {
       if (!type)
         return false;
+
       this.store(type, data, metadata, priority);
       if (this.isReady() && this.isEnabled())
         this.flush();
